@@ -8,16 +8,15 @@ def carregarPatrimonios():
 	db = open('patrimonio','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		patrimonio.apeend({'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]})
+		patrimonio.append({'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]})
 	db.close()
 
-	print(patrimonio)
 def carregarProfessor():
 
 	db = open('professor','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		professor.apeend({dados[0],dados[1],dados[2]})
+		professor.append({'nome': dados[0], 'senha': dados[1],'matricula': dados[2]})
 	db.close()
 
 def carregarAcessos():
@@ -25,7 +24,7 @@ def carregarAcessos():
 	db = open('acesso','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		acesso.apeend({dados[0],dados[1],dados[2],dados[3],dados[4],dados[5]})
+		acesso.append({dados[0],dados[1],dados[2],dados[3],dados[4],dados[5]})
 	db.close()
 
 def cadastrarPatrimonio():
@@ -35,7 +34,8 @@ def cadastrarPatrimonio():
 	disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
 
 	db = open('patrimonio','a')
-	db.write('{} / {} / {}\n'.format(nome,numero,disponibilidade))
+	db.write('{} / {} / {}'.format(nome,numero,disponibilidade))
+	db.write('\n')
 	db.close()
 	menu()
 
@@ -45,7 +45,8 @@ def cadastrarProfessor():
 	matricula = input("Digite o numero de matricula do professor:\n")
 
 	db = open('professor', 'a')
-	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
+	db.write('{} / {} / {}'.format(nome,senha,matricula))
+	db.write('\n')
 	db.close()
 	menu()
 
@@ -90,7 +91,7 @@ def menu():
 
 #carregarAcessos()
 #carregarProfessor()
-carregarPatrimonios()
+#carregarPatrimonios()
 #cadastrarPatrimonio()
 #cadastrarProfessor()
 menu()
