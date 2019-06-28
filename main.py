@@ -1,13 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-#from calendar import *
-#from time import *
-from datetime import date
-
-data_atual = date.today()
-data_em_texto = "{}/{}/{}".format(data_atual.day, data_atual.month,
-data_atual.year)
-print(data_em_texto)
+from datetime import datetime
 
 patrimonioLista = []
 patrimonioDicionario = {}
@@ -15,8 +8,17 @@ professorLista = []
 professorDicionario = {}
 acessoLista = []
 acessoDicionario = {}
-#data = date.today()
-print(asctime(localtime()))
+
+def horaAtual():
+	horarioatual = datetime.now()
+	horaFormatada = "{}:{}:{}".format(horarioatual.hour, horarioatual.minute,horarioatual.second)
+	return horaFormatada
+
+def dataAtual():
+	dataAtual = datetime.today()
+	dataFormatada = "{} de {} de {}".format(dataAtual.day, dataAtual.month,dataAtual.year)
+	return dataFormatada
+
 def criptografarSenha(senha):
     senhaCriptografada = ''
     for caracter in senha:
@@ -36,7 +38,7 @@ def carregarPatrimonios():
 
 def carregarProfessor():
 
-	db = open('professor','r')
+	db = open('professor.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
 		dados[1] = dados[1].strip(" ")
@@ -51,9 +53,9 @@ def carregarAcessos():
 	db = open('acesso.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		dados[5] = dados[5].rstrip("\n")
-		dados[5] = dados[5].lstrip(" ")
-		acessoDicionario = {dados[0],dados[1],dados[2],dados[3],dados[4],dados[5]}
+		dados[4] = dados[4].rstrip("\n")
+		dados[4] = dados[4].lstrip(" ")
+		acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'data':dados[3],'hora':dados[4]}
 		acessoLista.append(acessoDicionario)
 	db.close()
 
@@ -75,10 +77,16 @@ def cadastrarProfessor():
 	senha = criptografarSenha(senha)
 	matricula = input("Digite o numero de matricula do professor:\n")
 
-	db = open('professor', 'a')
+	db = open('professor.txt', 'a')
 	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
 	db.close()
 	#carregarProfessor()
+	menu()
+
+def cadastrarAcesso(matricula,patrimonio,tipoOp,data,hora):
+	db = open('acesso.txt', 'a')
+	db.write('{} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,data,hora))
+	db.close()
 	menu()
 
 def retirarPratimonio():
@@ -90,7 +98,9 @@ def retirarPratimonio():
 			if senha == i['senha']:
 				patrimonio = input("digite o numero do patrimonio")
 				tipoOperacao = 'retirada'
-
+				data = dataAtual()
+				hora = horaAtual()
+				cadastrarAcesso(matricula,patrimonio,tipoOperacao,data,hora)
 			else:
 				print("Matricula ou senha incorretas")
 
