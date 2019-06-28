@@ -1,41 +1,60 @@
+# -*- coding: utf-8 -*-
 import sys
-patrimonio = {}
-professor = []
-acesso = {}
+#from calendar import *
+#from time import *
+from datetime import date
+
+data_atual = date.today()
+data_em_texto = "{}/{}/{}".format(data_atual.day, data_atual.month,
+data_atual.year)
+print(data_em_texto)
+
+patrimonioLista = []
+patrimonioDicionario = {}
+professorLista = []
+professorDicionario = {}
+acessoLista = []
+acessoDicionario = {}
 #data = date.today()
+print(asctime(localtime()))
+def criptografarSenha(senha):
+    senhaCriptografada = ''
+    for caracter in senha:
+        senhaCriptografada += chr(ord(caracter) + 10)
+    return senhaCriptografada
+
 def carregarPatrimonios():
 	patrimonio = []
 	db = open('patrimonio.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		patrimonio.append([{'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}])
+		dados[2] = dados[2].rstrip("\n")
+		dados[2] = dados[2].lstrip(" ")
+		patrimonioDicionario = {'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}
+		patrimonioLista.append(patrimonioDicionario)
 	db.close()
 
 def carregarProfessor():
-	#professor = []
-	db = open('professor.txt','r')
+
+	db = open('professor','r')
 	for entrada in db:
-		print(entrada)
 		dados = entrada.split("/")
-		#print(dados[0])
-		#print(dados[1])
+		dados[1] = dados[1].strip(" ")
 		dados[2] = dados[2].rstrip("\n")
 		dados[2] = dados[2].lstrip(" ")
-		#print(type(dados[2]))
-		professor[0] = dados[0]
-		professor[1] = dados[1]
-		professor[2] = dados[2]
-
+		professorDicionario = {'nome': dados[0],'senha': dados[1],'matricula':dados[2]}
+		professorLista.append(professorDicionario)
 	db.close()
-
-	print(professor)
 
 def carregarAcessos():
 
 	db = open('acesso.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		acesso.append({dados[0],dados[1],dados[2],dados[3],dados[4],dados[5]})
+		dados[5] = dados[5].rstrip("\n")
+		dados[5] = dados[5].lstrip(" ")
+		acessoDicionario = {dados[0],dados[1],dados[2],dados[3],dados[4],dados[5]}
+		acessoLista.append(acessoDicionario)
 	db.close()
 
 def cadastrarPatrimonio():
@@ -53,9 +72,10 @@ def cadastrarPatrimonio():
 def cadastrarProfessor():
 	nome = input("Digite o nome do professor:\n")
 	senha = input("Digite o senha do professor:\n")
+	senha = criptografarSenha(senha)
 	matricula = input("Digite o numero de matricula do professor:\n")
 
-	db = open('professor.txt', 'a')
+	db = open('professor', 'a')
 	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
 	db.close()
 	#carregarProfessor()
@@ -64,11 +84,16 @@ def cadastrarProfessor():
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
 	senha = input("Digite sua senha:\n")
-	for i in professor:
-		print(i)
-		print(type(i))
+	senha = criptografarSenha(senha)
+	for i in professorLista:
 		if matricula == i['matricula']:
-			print("oi")
+			if senha == i['senha']:
+				patrimonio = input("digite o numero do patrimonio")
+				tipoOperacao = 'retirada'
+
+			else:
+				print("Matricula ou senha incorretas")
+
 
 
 def menu():
