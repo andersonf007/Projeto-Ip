@@ -1,33 +1,38 @@
 import sys
-patrimonio = []
+patrimonio = {}
 professor = []
-acesso = []
+acesso = {}
 #data = date.today()
 def carregarPatrimonios():
 	patrimonio = []
-	db = open('patrimonio','r')
+	db = open('patrimonio.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
 		patrimonio.append([{'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}])
 	db.close()
 
 def carregarProfessor():
-	professor = []
-	db = open('professor','r')
+	#professor = []
+	db = open('professor.txt','r')
 	for entrada in db:
+		print(entrada)
 		dados = entrada.split("/")
 		#print(dados[0])
+		#print(dados[1])
 		dados[2] = dados[2].rstrip("\n")
 		dados[2] = dados[2].lstrip(" ")
-		print(type(dados[2]))
-		professor.append([{'nome': dados[0], 'senha': dados[1],'matricula': dados[2]}])
+		#print(type(dados[2]))
+		professor[0] = dados[0]
+		professor[1] = dados[1]
+		professor[2] = dados[2]
+
 	db.close()
 
 	print(professor)
 
 def carregarAcessos():
 
-	db = open('acesso','r')
+	db = open('acesso.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
 		acesso.append({dados[0],dados[1],dados[2],dados[3],dados[4],dados[5]})
@@ -39,9 +44,10 @@ def cadastrarPatrimonio():
 	numero = input("Digite o numero do patrimonio:\n")
 	disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
 
-	db = open('patrimonio','a')
+	db = open('patrimonio.txt','a')
 	db.write('{} / {} / {}\n'.format(nome,numero,disponibilidade))
 	db.close()
+	carregarPatrimonios()
 	menu()
 
 def cadastrarProfessor():
@@ -49,20 +55,19 @@ def cadastrarProfessor():
 	senha = input("Digite o senha do professor:\n")
 	matricula = input("Digite o numero de matricula do professor:\n")
 
-	db = open('professor', 'a')
+	db = open('professor.txt', 'a')
 	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
 	db.close()
-	menu()
 	#carregarProfessor()
+	menu()
 
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
 	senha = input("Digite sua senha:\n")
-
-	for indice in professor:
-		print(indice)
-		print(type(indice))
-		if matricula == indice[2]:
+	for i in professor:
+		print(i)
+		print(type(i))
+		if matricula == i['matricula']:
 			print("oi")
 
 
