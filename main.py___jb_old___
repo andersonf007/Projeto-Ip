@@ -2,25 +2,21 @@ import sys
 patrimonio = []
 professor = []
 acesso = []
-#data = date.today()
+
 def carregarPatrimonios():
-	patrimonio = []
+
 	db = open('patrimonio','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		patrimonio.append([{'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}])
+		patrimonio.append({'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]})
 	db.close()
 
 def carregarProfessor():
-	professor = []
+
 	db = open('professor','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		#print(dados[0])
-		dados[2] = dados[2].rstrip("\n")
-		dados[2] = dados[2].lstrip(" ")
-		print(type(dados[2]))
-		professor.append([{'nome': dados[0], 'senha': dados[1],'matricula': dados[2]}])
+		professor.append({'nome': dados[0], 'senha': dados[1],'matricula': dados[2]})
 	db.close()
 
 	print(professor)
@@ -40,29 +36,30 @@ def cadastrarPatrimonio():
 	disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
 
 	db = open('patrimonio','a')
-	db.write('{} / {} / {}\n'.format(nome,numero,disponibilidade))
+	db.write('{} / {} / {}'.format(nome,numero,disponibilidade))
+	db.write('\n')
 	db.close()
 	menu()
 
 def cadastrarProfessor():
 	nome = input("Digite o nome do professor:\n")
 	senha = input("Digite o senha do professor:\n")
-	matricula = input("Digite o numero de matricula do professor:\n")
+	matricula = input("Digite o numero de matricula do professor:\n").strip()
 
 	db = open('professor', 'a')
-	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
+	db.write('{} / {} / {}'.format(nome,senha,matricula))
+	db.write('\n')
 	db.close()
 	menu()
-	#carregarProfessor()
 
 def retirarPratimonio():
-	matricula = input("Digite sua matricula:\n")
+
+	matricula = int(input("Digite sua matricula:\n"))
 	senha = input("Digite sua senha:\n")
 
 	for indice in professor:
-		print(indice)
-		print(type(indice))
-		if matricula == indice[2]:
+		print("oi")
+		if professor[indice] == 6:
 			print("oi")
 
 
