@@ -1,1 +1,3 @@
-projetor epson / 1 / 0
+projetor epson    / 1 / 0
+controle    / 12345 / 1
+controle do projetor   / 9 / 1
