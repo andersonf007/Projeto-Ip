@@ -40,8 +40,6 @@ def carregarPatrimonios():
 		patrimonioDicionario = {'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}
 		patrimonioLista.append(patrimonioDicionario)
 	db.close()
-	#print("CARREGAR PATRIMONIO")
-	#print(patrimonioLista)
 
 def carregarProfessor():
 
@@ -54,7 +52,6 @@ def carregarProfessor():
 		professorDicionario = {'nome': dados[0],'senha': dados[1],'matricula':dados[2]}
 		professorLista.append(professorDicionario)
 	db.close()
-	#print(professorLista)
 
 def carregarAcessos():
 
@@ -67,7 +64,7 @@ def carregarAcessos():
 		acessoLista.append(acessoDicionario)
 	db.close()
 
-def cadastrarPatrimonio(id):
+def cadastrarPatrimonio(id,disponibilidade):
 
 	if id == 0:
 		nome = input("Digite o nome do patrimonio:\n")
@@ -81,17 +78,20 @@ def cadastrarPatrimonio(id):
 		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 		print("Patrimônio cadastrado com sucesso!")
 		menu()
-	else:
+	else:	#nesse else ele vai alterar a disponibilidade do patrimonio reescrevendo as informacoes no arquivo
 		db = open('patrimonio.txt','w')
 		for j in patrimonioLista:
 			if id == j['numero']:
-				j['disponibilidade'] = 1
-				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],j['disponibilidade']))
+				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],disponibilidade))
 			else:
-				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],j['disponibilidade']))
+				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],disponibilidade))
 		db.close()
-		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-		print("O patrimônio pode ser retirado!")
+		if disponibilidade == 1 or  disponibilidade == '1':	#nesse if ele vai verificar se ele retirou ou repôs um patrimônio para poder apresentar a mensagem correta
+			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+			print("O patrimônio pode ser retirado!")
+		elif disponibilidade == 0 or disponibilidade == '0':
+			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+			print("O patrimônio agora está disponivel para retirada!")
 		menu()
 
 def cadastrarProfessor():
@@ -122,16 +122,19 @@ def retirarPratimonio():
 	for i in professorLista: # varre a lista de professores
 		if matricula == i['matricula']: # confere se a matricula bate
 			if senha == i['senha']:	# confere se a senha bate
+				print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+				print("Seja bem vindo(a) prof. {}".format(i['nome']))
+				print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 				patrimonio = input("Digite o numero do patrimonio:\n")
 				for j in patrimonioLista:
 					if patrimonio == j['numero']:	#confere se o patrimonio existe na lista
 						if j['disponibilidade'] == 0 or j['disponibilidade'] == '0':	#verifica se o patrimonio esta disponivel
-							#j['disponibilidade'] = 1	#altera a disponibilidade do patrimonio
+							j['disponibilidade'] = '1'	#altera a disponibilidade do patrimonio
 							tipoOperacao = 'retirada'
 							data = dataAtual()
 							hora = horaAtual()
 							cadastrarAcesso(matricula,patrimonio,tipoOperacao,data,hora)
-							cadastrarPatrimonio(patrimonio)
+							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
 							#restart_program()
 							menu()
 						else:
@@ -143,26 +146,55 @@ def retirarPratimonio():
 				print("Matricula ou senha incorretas")
 				menu()
 
-
+def reporPratimonio():
+	matricula = input("Digite sua matricula:\n")
+	senha = input("Digite sua senha:\n")
+	senha = criptografarSenha(senha)
+	for i in professorLista: # varre a lista de professores
+		if matricula == i['matricula']: # confere se a matricula bate
+			if senha == i['senha']:	# confere se a senha bate
+				print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+				print("Seja bem vindo(a) prof. {}".format(i['nome']))
+				print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+				patrimonio = input("Digite o numero do patrimonio:\n")
+				for j in patrimonioLista:
+					if patrimonio == j['numero']:	#confere se o patrimonio existe na lista
+						if j['disponibilidade'] == 1 or j['disponibilidade'] == '1':	#verifica se o patrimonio esta em uso
+							j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
+							tipoOperacao = 'retirada'
+							data = dataAtual()
+							hora = horaAtual()
+							cadastrarAcesso(matricula,patrimonio,tipoOperacao,data,hora)
+							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
+							#restart_program()
+							menu()
+						else:
+							print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+							print("Esse patrimonio não foi retirado!")
+							menu()
+			else:
+				print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+				print("Matricula ou senha incorretas")
+				menu()
 
 def menu():
 	print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-	print("|                 Digite o numero correspondente                 |")
+	print("|                 Digite o número correspondente                 |")
 	print("| 1 - Cadastrar o patrimônio                                     |")
 	print("| 2 - Cadastrar o professor                                      |")
-	print("| 3 - Retirar pratimonio                                         |")
-	print("| 4 - Repor patrimonio                                           |")
-	print("| 5 - Patrimonios aguardando devoicao                            |")
+	print("| 3 - Retirar patrimônio                                         |")
+	print("| 4 - Repor patrimônio                                           |")
+	print("| 5 - Patrimonios aguardando devolução                            |")
 	print("| 6 - Pratimonios disponiveis                                    |")
 	print("| 7 - Listagem dos professores que ficaram com os patrimonios    |")
-	print("| 8 - Listagem dos pratimonios mais utilizados                   |")
+	print("| 8 - Listagem dos patrimônios mais utilizados                   |")
 	print("| 0 - Sair                                                       |")
 	print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 
 	opc = int(input())
 
 	if opc == 1:
-		cadastrarPatrimonio(0)
+		cadastrarPatrimonio(0,0)
 	elif opc == 2:
 		cadastrarProfessor()
 	elif opc == 3:
@@ -184,7 +216,7 @@ def menu():
 		menu()
 
 
-#carregarAcessos()
+carregarAcessos()
 carregarProfessor()
 carregarPatrimonios()
 #cadastrarPatrimonio(0)
