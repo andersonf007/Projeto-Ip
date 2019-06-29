@@ -12,6 +12,10 @@ professorLista = []
 professorDicionario = {}
 acessoLista = []
 acessoDicionario = {}
+patrimoniosAguardandoDevolucaoLista = []
+patrimoniosAguardandoDevolucaoDicionatio = {}
+
+#def patrimoniosAguardandoDevolucao
 
 def horaAtual():
 	horarioatual = datetime.now()
@@ -58,9 +62,9 @@ def carregarAcessos():
 	db = open('acesso.txt','r')
 	for entrada in db:
 		dados = entrada.split("/")
-		dados[4] = dados[4].rstrip("\n")
-		dados[4] = dados[4].lstrip(" ")
-		acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'data':dados[3],'hora':dados[4]}
+		dados[6] = dados[6].rstrip("\n")
+		dados[6] = dados[6].lstrip(" ")
+		acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'dataR':dados[3],'horaR':dados[4],'dataD':dados[5],'horaD':dados[6]}
 		acessoLista.append(acessoDicionario)
 	db.close()
 
@@ -84,13 +88,13 @@ def cadastrarPatrimonio(id,disponibilidade):
 			if id == j['numero']:
 				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],disponibilidade))
 			else:
-				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],disponibilidade))
+				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],j['disponibilidade']))
 		db.close()
 		if disponibilidade == 1 or  disponibilidade == '1':	#nesse if ele vai verificar se ele retirou ou repôs um patrimônio para poder apresentar a mensagem correta
 			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 			print("O patrimônio pode ser retirado!")
 		elif disponibilidade == 0 or disponibilidade == '0':
-			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 			print("O patrimônio agora está disponivel para retirada!")
 		menu()
 
@@ -108,13 +112,21 @@ def cadastrarProfessor():
 	print("Professor cadastrado com sucesso!")
 	menu()
 
-def cadastrarAcesso(matricula,patrimonio,tipoOp,data,hora):
-	db = open('acesso.txt', 'a')
-	db.write('{} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,data,hora))
-	db.close()
-	acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'data':data,'hora':hora}
-	acessoLista.append(acessoDicionario)
-
+def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,horaR,dataD,horaD):	#A dataD e horaD são os horarios da devolução do patrimonio
+	if cadastrar == 0:
+		db = open('acesso.txt', 'a')
+		db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,dataR,horaR,0,0))
+		db.close()
+		acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'dataR':dataR,'horaR':horaR}
+		acessoLista.append(acessoDicionario)
+	else:
+		db = open('acesso.txt', 'w')
+		for j in acessoLista:
+			if j['matricula'] == matricula and j['patrimonio'] == patrimonio and j['tipoOp'] == 'retirada':
+				db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],tipoOp,j['dataR'],j['horaR'],dataD,horaD))
+			else:
+				db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['horaR'],j['dataD'],j['horaD']))
+		
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
 	senha = input("Digite sua senha:\n")
@@ -133,7 +145,7 @@ def retirarPratimonio():
 							tipoOperacao = 'retirada'
 							data = dataAtual()
 							hora = horaAtual()
-							cadastrarAcesso(matricula,patrimonio,tipoOperacao,data,hora)
+							cadastrarAcesso(0,matricula,patrimonio,tipoOperacao,data,hora,0,0)
 							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
 							#restart_program()
 							menu()
@@ -161,10 +173,10 @@ def reporPratimonio():
 					if patrimonio == j['numero']:	#confere se o patrimonio existe na lista
 						if j['disponibilidade'] == 1 or j['disponibilidade'] == '1':	#verifica se o patrimonio esta em uso
 							j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
-							tipoOperacao = 'retirada'
+							tipoOperacao = 'devolução'
 							data = dataAtual()
 							hora = horaAtual()
-							cadastrarAcesso(matricula,patrimonio,tipoOperacao,data,hora)
+							cadastrarAcesso(1,matricula,patrimonio,tipoOperacao,0,0,data,hora)
 							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
 							#restart_program()
 							menu()
@@ -184,7 +196,7 @@ def menu():
 	print("| 2 - Cadastrar o professor                                      |")
 	print("| 3 - Retirar patrimônio                                         |")
 	print("| 4 - Repor patrimônio                                           |")
-	print("| 5 - Patrimonios aguardando devolução                            |")
+	print("| 5 - Patrimonios aguardando devolução                           |")
 	print("| 6 - Pratimonios disponiveis                                    |")
 	print("| 7 - Listagem dos professores que ficaram com os patrimonios    |")
 	print("| 8 - Listagem dos patrimônios mais utilizados                   |")
