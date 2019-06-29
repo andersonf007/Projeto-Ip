@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 import sys
 from datetime import datetime
+import os
+#def restart_program():
+#    python = sys.executable
+#    os.execl(python, python, * sys.argv)
 
 patrimonioLista = []
 patrimonioDicionario = {}
@@ -36,6 +40,7 @@ def carregarPatrimonios():
 		patrimonioDicionario = {'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}
 		patrimonioLista.append(patrimonioDicionario)
 	db.close()
+	#print("CARREGAR PATRIMONIO")
 	#print(patrimonioLista)
 
 def carregarProfessor():
@@ -49,6 +54,7 @@ def carregarProfessor():
 		professorDicionario = {'nome': dados[0],'senha': dados[1],'matricula':dados[2]}
 		professorLista.append(professorDicionario)
 	db.close()
+	#print(professorLista)
 
 def carregarAcessos():
 
@@ -70,6 +76,10 @@ def cadastrarPatrimonio(id):
 		db = open('patrimonio.txt','a')
 		db.write('{} / {} / {}\n'.format(nome,numero,disponibilidade))
 		db.close()
+		patrimonioDicionario = {'nome': nome,'numero': numero,'disponibilidade': disponibilidade}
+		patrimonioLista.append(patrimonioDicionario)
+		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+		print("Patrimônio cadastrado com sucesso!")
 		menu()
 	else:
 		db = open('patrimonio.txt','w')
@@ -80,6 +90,8 @@ def cadastrarPatrimonio(id):
 			else:
 				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],j['disponibilidade']))
 		db.close()
+		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		print("O patrimônio pode ser retirado!")
 		menu()
 
 def cadastrarProfessor():
@@ -87,17 +99,21 @@ def cadastrarProfessor():
 	senha = input("Digite o senha do professor:\n")
 	senha = criptografarSenha(senha)
 	matricula = input("Digite o numero de matricula do professor:\n")
-
 	db = open('professor.txt', 'a')
 	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
 	db.close()
-	#carregarProfessor()
+	professorDicionario = {'nome': nome,'senha': senha,'matricula':matricula}
+	professorLista.append(professorDicionario)
+	print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+	print("Professor cadastrado com sucesso!")
 	menu()
 
 def cadastrarAcesso(matricula,patrimonio,tipoOp,data,hora):
 	db = open('acesso.txt', 'a')
 	db.write('{} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,data,hora))
 	db.close()
+	acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'data':data,'hora':hora}
+	acessoLista.append(acessoDicionario)
 
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
@@ -108,20 +124,22 @@ def retirarPratimonio():
 			if senha == i['senha']:	# confere se a senha bate
 				patrimonio = input("Digite o numero do patrimonio:\n")
 				for j in patrimonioLista:
-					print(j)
 					if patrimonio == j['numero']:	#confere se o patrimonio existe na lista
-						if j['disponibilidade'] == '0':	#verifica se o patrimonio esta disponivel
-							j['disponibilidade'] = 1	#altera a disponibilidade do patrimonio
+						if j['disponibilidade'] == 0 or j['disponibilidade'] == '0':	#verifica se o patrimonio esta disponivel
+							#j['disponibilidade'] = 1	#altera a disponibilidade do patrimonio
 							tipoOperacao = 'retirada'
 							data = dataAtual()
 							hora = horaAtual()
 							cadastrarAcesso(matricula,patrimonio,tipoOperacao,data,hora)
 							cadastrarPatrimonio(patrimonio)
+							#restart_program()
 							menu()
 						else:
+							print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 							print("Esse patrimonio não está disponivel")
 							menu()
 			else:
+				print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 				print("Matricula ou senha incorretas")
 				menu()
 

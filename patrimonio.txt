@@ -1,3 +1,6 @@
-projetor epson    / 1 / 0
-controle    / 12345 / 1
-controle do projetor   / 9 / 1
+proj     / 1 / 1
+wqe1     / 2 / 1
+wqe     / 3 / 1
+werrrr     / 4 / 1
+ghg  / 5 / 1
+fhg / 6 / 1
