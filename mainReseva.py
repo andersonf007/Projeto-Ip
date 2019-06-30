@@ -21,6 +21,15 @@ def patrimoniosAguardandoDevolucao():
 			print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 			print("Nª do patrimonio: {}".format(i['patrimonio']))
 			print("Retirado no dia: {} às {} ".format(i['dataR'],i['horaR']))
+	menu()
+
+def pratimoniosDisponiveis():
+	for i in patrimonioLista:
+		if i['disponibilidade'] == '0' or i['disponibilidade'] == 0:
+			print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+			print("Nome do patrimonio: {}".format(i['nome']))
+			print("Nª do patrimonio: {}".format(i['numero']))
+	menu()
 
 def horaAtual():
 	horarioatual = datetime.now()
