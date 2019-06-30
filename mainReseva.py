@@ -15,7 +15,12 @@ acessoDicionario = {}
 patrimoniosAguardandoDevolucaoLista = []
 patrimoniosAguardandoDevolucaoDicionatio = {}
 
-#def patrimoniosAguardandoDevolucao
+def patrimoniosAguardandoDevolucao():
+	for i in acessoLista:
+		if i['tipoOp'] == ' retirada ':
+			print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+			print("Nª do patrimonio: {}".format(i['patrimonio']))
+			print("Retirado no dia: {} às {} ".format(i['dataR'],i['horaR']))
 
 def horaAtual():
 	horarioatual = datetime.now()
@@ -24,7 +29,7 @@ def horaAtual():
 
 def dataAtual():
 	dataAtual = datetime.today()
-	dataFormatada = "{} de {} de {}".format(dataAtual.day, dataAtual.month,dataAtual.year)
+	dataFormatada = "{} do {} de {}".format(dataAtual.day, dataAtual.month,dataAtual.year)
 	return dataFormatada
 
 def criptografarSenha(senha):
@@ -126,7 +131,7 @@ def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,horaR,dataD,hora
 				db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],tipoOp,j['dataR'],j['horaR'],dataD,horaD))
 			else:
 				db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['horaR'],j['dataD'],j['horaD']))
-		
+
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
 	senha = input("Digite sua senha:\n")
@@ -214,7 +219,7 @@ def menu():
 	elif opc == 4:
 		reporPratimonio()
 	elif opc == 5:
-		pratimoniosAguardandoDevolucao()
+		patrimoniosAguardandoDevolucao()
 	elif opc == 6:
 		pratimoniosDisponiveis()
 	elif opc == 7:
