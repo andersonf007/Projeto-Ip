@@ -2,9 +2,6 @@
 import sys
 from datetime import datetime
 import os
-#def restart_program():
-#    python = sys.executable
-#    os.execl(python, python, * sys.argv)
 
 patrimonioLista = []
 patrimonioDicionario = {}
@@ -15,12 +12,44 @@ acessoDicionario = {}
 patrimoniosAguardandoDevolucaoLista = []
 patrimoniosAguardandoDevolucaoDicionatio = {}
 
+def converterStringDatetime(variavel):
+	string = '2019-07-03 18:49:27.296766'
+	if variavel != ' 0':
+		#print(variavel)
+		dados = variavel.split("-")
+		dados2 = variavel.split(":")
+		ano = int(dados[0])
+		mes = int(dados[1])
+		#print("mês - {}".format(dados[1]))
+		dia = int(dados[2].split(' ')[0])
+		hora = int(dados2[0].split(' ')[2])
+		minutos = int(dados2[1])
+		#print(type(hora))
+		#print("ano - {}".format(dados[0]))
+		#print("mês - {}".format(dados[1]))
+		#print("dia - {}".format(dados[2].split(' ')[0]))
+		#print("hora - {}".format(dados2[0].split(' ')[2]))
+		#print("minutos - {}".format(dados2[1]))
+		return datetime(year=ano,month=mes,day=dia,hour=hora,minute=minutos)
+	else:
+		return variavel
+
+def listagemProfessores():
+	matricula = input("Digite o número da matricula do professor:\n")
+	patrimonio = input("Digite o numero do patrimônio:\n")
+	#horas = int(input("Por mais de quantas horas?\n"))
+	#dias = int(input("Nos ultimos quantos dias?\n"))
+	for i in acessoLista:
+		if i['tipoOp'] == 'devolução' and i['matricula'] == matricula and i['patrimonio'] == patrimonio:
+			date = datetime.strptime(i['dataR'], '%d/%m/%Y').date()
+			print(date)
+
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
 		if i['tipoOp'] == ' retirada ':
 			print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 			print("Nª do patrimonio: {}".format(i['patrimonio']))
-			print("Retirado no dia: {} às {} ".format(i['dataR'],i['horaR']))
+			print("Retirado no dia: {}".format(i['dataR']))
 	menu()
 
 def pratimoniosDisponiveis():
@@ -33,13 +62,15 @@ def pratimoniosDisponiveis():
 
 def horaAtual():
 	horarioatual = datetime.now()
-	horaFormatada = "{}:{}:{}".format(horarioatual.hour, horarioatual.minute,horarioatual.second)
-	return horaFormatada
+	#horaFormatada = "{}:{}:{}".format(horarioatual.hour, horarioatual.minute,horarioatual.second)
+	#return horaFormatada
+	return horarioatual
 
 def dataAtual():
 	dataAtual = datetime.today()
-	dataFormatada = "{} do {} de {}".format(dataAtual.day, dataAtual.month,dataAtual.year)
-	return dataFormatada
+	#dataFormatada = "{} do {} de {}".format(dataAtual.day, dataAtual.month,dataAtual.year)
+	#return dataFormatada
+	return dataAtual
 
 def criptografarSenha(senha):
     senhaCriptografada = ''
@@ -51,37 +82,50 @@ def carregarPatrimonios():
 
 	db = open('patrimonio.txt','r')
 	for entrada in db:
-		dados = entrada.split("/")
-		dados[1] = dados[1].strip(" ")
-		dados[2] = dados[2].rstrip("\n")
-		dados[2] = dados[2].lstrip(" ")
-		patrimonioDicionario = {'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}
-		patrimonioLista.append(patrimonioDicionario)
+		if entrada != '\n':
+			dados = entrada.split("/")
+			dados[1] = dados[1].strip(" ")
+			dados[2] = dados[2].rstrip("\n")
+			dados[2] = dados[2].lstrip(" ")
+			patrimonioDicionario = {'nome': dados[0],'numero': dados[1],'disponibilidade': dados[2]}
+			patrimonioLista.append(patrimonioDicionario)
+		else:
+			print("Não à dados de patrimonio no sistema no sistema!")
 	db.close()
 
 def carregarProfessor():
 
 	db = open('professor.txt','r')
 	for entrada in db:
-		dados = entrada.split("/")
-		dados[1] = dados[1].strip(" ")
-		dados[2] = dados[2].rstrip("\n")
-		dados[2] = dados[2].lstrip(" ")
-		professorDicionario = {'nome': dados[0],'senha': dados[1],'matricula':dados[2]}
-		professorLista.append(professorDicionario)
+		if entrada != '\n':
+			dados = entrada.split("/")
+			dados[1] = dados[1].strip(" ")
+			dados[2] = dados[2].rstrip("\n")
+			dados[2] = dados[2].lstrip(" ")
+			professorDicionario = {'nome': dados[0],'senha': dados[1],'matricula':dados[2]}
+			professorLista.append(professorDicionario)
+		else:
+			print("Não à dados de professores no sistema no sistema!")
 	db.close()
 
 def carregarAcessos():
 
 	db = open('acesso.txt','r')
 	for entrada in db:
-		dados = entrada.split("/")
-		dados[6] = dados[6].rstrip("\n")
-		dados[6] = dados[6].lstrip(" ")
-		acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'dataR':dados[3],'horaR':dados[4],'dataD':dados[5],'horaD':dados[6]}
-		acessoLista.append(acessoDicionario)
+		if entrada != '\n':
+			dados = entrada.split("/")
+			dados[0] = dados[0].strip(" ")
+			dados[1] = dados[1].strip(" ")
+			dados[2] = dados[2].strip(" ")
+			dados[4] = dados[4].rstrip("\n")
+			dataR = converterStringDatetime(dados[3])
+			dataD = converterStringDatetime(dados[4])
+			acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'dataR':dataR,'dataD':dataD}
+			acessoLista.append(acessoDicionario)
+		else:
+			print("Não à dados de movimentação de patrimonio no sistema no sistema!")
 	db.close()
-
+	print(acessoLista)
 def cadastrarPatrimonio(id,disponibilidade):
 
 	if id == 0:
@@ -126,20 +170,25 @@ def cadastrarProfessor():
 	print("Professor cadastrado com sucesso!")
 	menu()
 
-def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,horaR,dataD,horaD):	#A dataD e horaD são os horarios da devolução do patrimonio
+def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,dataD):	#A dataD e horaD são os horarios da devolução do patrimonio
 	if cadastrar == 0:
+		dataDevolucao = 0
 		db = open('acesso.txt', 'a')
-		db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,dataR,horaR,0,0))
+		db.write('{} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,dataR,dataDevolucao))
 		db.close()
-		acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'dataR':dataR,'horaR':horaR}
+		acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'dataR':dataR,'dataD':dataDevolucao}
 		acessoLista.append(acessoDicionario)
 	else:
-		db = open('acesso.txt', 'w')
+		db = open('acesso.txt','w')
 		for j in acessoLista:
 			if j['matricula'] == matricula and j['patrimonio'] == patrimonio and j['tipoOp'] == 'retirada':
-				db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],tipoOp,j['dataR'],j['horaR'],dataD,horaD))
+				db.write('{} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],tipoOp,j['dataR'],dataD))
 			else:
-				db.write('{} / {} / {} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['horaR'],j['dataD'],j['horaD']))
+				db.write('{} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['dataD']))
+		db.close()
+		print(acessoLista)
+		print("---------------------------------------------------------------------------------------------")
+		print(patrimonioLista)
 
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
@@ -158,8 +207,8 @@ def retirarPratimonio():
 							j['disponibilidade'] = '1'	#altera a disponibilidade do patrimonio
 							tipoOperacao = 'retirada'
 							data = dataAtual()
-							hora = horaAtual()
-							cadastrarAcesso(0,matricula,patrimonio,tipoOperacao,data,hora,0,0)
+							#hora = horaAtual()
+							cadastrarAcesso(0,matricula,patrimonio,tipoOperacao,data,0)
 							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
 							#restart_program()
 							menu()
@@ -189,10 +238,8 @@ def reporPratimonio():
 							j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
 							tipoOperacao = 'devolução'
 							data = dataAtual()
-							hora = horaAtual()
-							cadastrarAcesso(1,matricula,patrimonio,tipoOperacao,0,0,data,hora)
+							cadastrarAcesso(1,matricula,patrimonio,tipoOperacao,0,data)
 							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
-							#restart_program()
 							menu()
 						else:
 							print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
@@ -241,7 +288,7 @@ def menu():
 		print("Digite Um valor Valido!")
 		menu()
 
-
+#converterStringDatetime()
 carregarAcessos()
 carregarProfessor()
 carregarPatrimonios()
