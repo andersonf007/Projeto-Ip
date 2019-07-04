@@ -15,21 +15,13 @@ patrimoniosAguardandoDevolucaoDicionatio = {}
 def converterStringDatetime(variavel):
 	string = '2019-07-03 18:49:27.296766'
 	if variavel != ' 0':
-		#print(variavel)
 		dados = variavel.split("-")
 		dados2 = variavel.split(":")
 		ano = int(dados[0])
 		mes = int(dados[1])
-		#print("mês - {}".format(dados[1]))
 		dia = int(dados[2].split(' ')[0])
 		hora = int(dados2[0].split(' ')[2])
 		minutos = int(dados2[1])
-		#print(type(hora))
-		#print("ano - {}".format(dados[0]))
-		#print("mês - {}".format(dados[1]))
-		#print("dia - {}".format(dados[2].split(' ')[0]))
-		#print("hora - {}".format(dados2[0].split(' ')[2]))
-		#print("minutos - {}".format(dados2[1]))
 		return datetime(year=ano,month=mes,day=dia,hour=hora,minute=minutos)
 	else:
 		return variavel
@@ -120,12 +112,14 @@ def carregarAcessos():
 			dados[4] = dados[4].rstrip("\n")
 			dataR = converterStringDatetime(dados[3])
 			dataD = converterStringDatetime(dados[4])
+
 			acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'dataR':dataR,'dataD':dataD}
 			acessoLista.append(acessoDicionario)
 		else:
 			print("Não à dados de movimentação de patrimonio no sistema no sistema!")
 	db.close()
 	print(acessoLista)
+
 def cadastrarPatrimonio(id,disponibilidade):
 
 	if id == 0:
@@ -186,9 +180,6 @@ def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,dataD):	#A dataD
 			else:
 				db.write('{} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['dataD']))
 		db.close()
-		print(acessoLista)
-		print("---------------------------------------------------------------------------------------------")
-		print(patrimonioLista)
 
 def retirarPratimonio():
 	matricula = input("Digite sua matricula:\n")
@@ -207,10 +198,8 @@ def retirarPratimonio():
 							j['disponibilidade'] = '1'	#altera a disponibilidade do patrimonio
 							tipoOperacao = 'retirada'
 							data = dataAtual()
-							#hora = horaAtual()
 							cadastrarAcesso(0,matricula,patrimonio,tipoOperacao,data,0)
 							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
-							#restart_program()
 							menu()
 						else:
 							print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
@@ -235,12 +224,15 @@ def reporPratimonio():
 				for j in patrimonioLista:
 					if patrimonio == j['numero']:	#confere se o patrimonio existe na lista
 						if j['disponibilidade'] == 1 or j['disponibilidade'] == '1':	#verifica se o patrimonio esta em uso
-							j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
-							tipoOperacao = 'devolução'
-							data = dataAtual()
-							cadastrarAcesso(1,matricula,patrimonio,tipoOperacao,0,data)
-							cadastrarPatrimonio(patrimonio,j['disponibilidade'])
-							menu()
+							for k in acessoLista:
+								if k['matricula'] == matricula and k['patrimonio'] == patrimonio and k['tipoOp'] == 'retirada':
+									k['tipoOp'] = 'devolução'
+									j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
+									data = dataAtual()
+									k['dataD'] = data
+									cadastrarAcesso(1,matricula,patrimonio,'devolução',0,data)
+									cadastrarPatrimonio(patrimonio,j['disponibilidade'])
+									menu()
 						else:
 							print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 							print("Esse patrimonio não foi retirado!")
@@ -251,6 +243,7 @@ def reporPratimonio():
 				menu()
 
 def menu():
+
 	print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 	print("|                 Digite o número correspondente                 |")
 	print("| 1 - Cadastrar o patrimônio                                     |")
