@@ -27,13 +27,26 @@ def converterStringDatetime(variavel):
 		return variavel
 
 def listagemProfessores():
-	#matricula = input("Digite o número da matricula do professor:\n")
-	#patrimonio = input("Digite o numero do patrimônio:\n")
+	lista = []
+	lista2 = []
+	dicionario = {}
+	patrimonio = input("Digite o numero do patrimônio:\n")
 	horas = int(input("Por mais de quantas horas?\n"))
 	dias = int(input("Nos ultimos quantos dias?\n"))
 	for i in acessoLista:
-		if i['tipoOp'] == 'devolução' and i['matricula'] == matricula and i['patrimonio'] == patrimonio:
+		if i['tipoOp'] == 'devolucao' and i['patrimonio'] == patrimonio:
 			c = datetime.today() - timedelta(days=dias,hours=horas)
+			if i['dataR'] >= c:
+				for j in professorLista:
+					if j['matricula'] == i['matricula']:
+						dicionario = {'nome':j['nome'],'matricula':j['matricula']}
+						lista.append(dicionario)
+
+	for k in lista: # varre a lista que esta com duplicidade e confere com a lista2 que nao tem duplicidade!
+		if k['nome'] not in lista2:
+			lista2.append(k['nome'])
+			print("Professor: {} / Matricula: {} ".format(k['nome'],k['matricula']))
+
 
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
@@ -224,11 +237,11 @@ def reporPratimonio():
 						if j['disponibilidade'] == 1 or j['disponibilidade'] == '1':	#verifica se o patrimonio esta em uso
 							for k in acessoLista:
 								if k['matricula'] == matricula and k['patrimonio'] == patrimonio and k['tipoOp'] == 'retirada':
-									k['tipoOp'] = 'devolução'
+									k['tipoOp'] = 'devolucao'
 									j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
 									data = dataAtual()
 									k['dataD'] = data
-									cadastrarAcesso(1,matricula,patrimonio,'devolução',0,data)
+									cadastrarAcesso(1,matricula,patrimonio,'devolucao',0,data)
 									cadastrarPatrimonio(patrimonio,j['disponibilidade'])
 									menu()
 						else:
