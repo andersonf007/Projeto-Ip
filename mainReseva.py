@@ -35,8 +35,8 @@ def listagemProfessores():
 	dias = int(input("Nos ultimos quantos dias?\n"))
 	for i in acessoLista:
 		if i['tipoOp'] == 'devolucao' and i['patrimonio'] == patrimonio:
-			c = datetime.today() - timedelta(days=dias,hours=horas)
-			if i['dataR'] >= c:
+			data = datetime.today() - timedelta(days=dias,hours=horas)
+			if i['dataR'] >= data:
 				for j in professorLista:
 					if j['matricula'] == i['matricula']:
 						dicionario = {'nome':j['nome'],'matricula':j['matricula']}
@@ -47,6 +47,23 @@ def listagemProfessores():
 			lista2.append(k['nome'])
 			print("Professor: {} / Matricula: {} ".format(k['nome'],k['matricula']))
 
+def listagemPratimoniosMaisUsados():
+	lista = []
+	lista2 = []
+	dicionario = {}
+	cont = 0
+	dias = int(input("Nos ultimos quantos dias?\n"))
+	for i in acessoLista:
+		data = datetime.today() - timedelta(days=dias)
+		if i['dataR'] >= data:
+			lista.append(i['patrimonio'])
+
+	for j in patrimonioLista:
+		for i in lista:
+			if i == j['numero']:
+				cont += 1
+		print("Patrimônio - {} Foi utilizado {} vezes".format(j['nome'],cont))
+		cont = 0
 
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
