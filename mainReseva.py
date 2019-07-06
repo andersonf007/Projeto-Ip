@@ -12,8 +12,8 @@ acessoDicionario = {}
 patrimoniosAguardandoDevolucaoLista = []
 patrimoniosAguardandoDevolucaoDicionatio = {}
 
+#Recebe uma string separa ela em partes específicas para converter em datetime
 def converterStringDatetime(variavel):
-	string = '2019-07-03 18:49:27.296766'
 	if variavel != ' 0':
 		dados = variavel.split("-")
 		dados2 = variavel.split(":")
@@ -32,15 +32,15 @@ def listagemProfessores():
 	dicionario = {}
 	patrimonio = input("Digite o numero do patrimônio:\n")
 	horas = int(input("Por mais de quantas horas?\n"))
-	dias = int(input("Nos ultimos quantos dias?\n"))
+	dias = int(input("Nos últimos quantos dias?\n"))
 	for i in acessoLista:
-		if i['tipoOp'] == 'devolucao' and i['patrimonio'] == patrimonio:
-			data = datetime.today() - timedelta(days=dias,hours=horas)
-			if i['dataR'] >= data:
+		if i['tipoOp'] == 'devolucao' and i['patrimonio'] == patrimonio: #Compara as informações digitadas com as informações na lista de acesso
+			data = datetime.today() - timedelta(days=dias,hours=horas) #subtrai a data e a hora
+			if i['dataR'] >= data:	#Verifica as datas informada é inferior as datas no arquivo
 				for j in professorLista:
 					if j['matricula'] == i['matricula']:
 						dicionario = {'nome':j['nome'],'matricula':j['matricula']}
-						lista.append(dicionario)
+						lista.append(dicionario)	#Essa lista esta com informaçõesem duplicidade
 
 	for k in lista: # varre a lista que esta com duplicidade e confere com a lista2 que nao tem duplicidade!
 		if k['nome'] not in lista2:
@@ -49,21 +49,20 @@ def listagemProfessores():
 
 def listagemPratimoniosMaisUsados():
 	lista = []
-	lista2 = []
-	dicionario = {}
 	cont = 0
-	dias = int(input("Nos ultimos quantos dias?\n"))
+	dias = int(input("Nos últimos quantos dias?\n"))
 	for i in acessoLista:
 		data = datetime.today() - timedelta(days=dias)
 		if i['dataR'] >= data:
-			lista.append(i['patrimonio'])
+			lista.append(i['patrimonio']) 	#Nessa lista so tem os codigos dos patrimônios na qual teve movimentação
 
 	for j in patrimonioLista:
 		for i in lista:
-			if i == j['numero']:
+			if i == j['numero']:	#compara as informações da lista junto com a lista de patrimonio para realizar a contagem e poder mostrar os nomes dos Patrimônios
 				cont += 1
 		print("Patrimônio - {} Foi utilizado {} vezes".format(j['nome'],cont))
 		cont = 0
+	menu()
 
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
@@ -81,24 +80,18 @@ def pratimoniosDisponiveis():
 			print("Nª do patrimonio: {}".format(i['numero']))
 	menu()
 
-def horaAtual():
-	horarioatual = datetime.now()
-	#horaFormatada = "{}:{}:{}".format(horarioatual.hour, horarioatual.minute,horarioatual.second)
-	#return horaFormatada
-	return horarioatual
-
 def dataAtual():
 	dataAtual = datetime.today()
-	#dataFormatada = "{} do {} de {}".format(dataAtual.day, dataAtual.month,dataAtual.year)
-	#return dataFormatada
 	return dataAtual
 
-def criptografarSenha(senha):
-    senhaCriptografada = ''
-    for caracter in senha:
-        senhaCriptografada += chr(ord(caracter) + 10)
-    return senhaCriptografada
+#O metodo ord() retorna um inteiro referente ao caracter na tabela ascii que é somado 25 e vai para chr() que recebe um interiro e retorna uma string de acordo com o unicode
+def criptografiaSenha(senha):
+	criptografada = ''
+	for c in senha:
+		criptografada += chr(ord(c)+25)
+	return criptografada
 
+#Recebe as informações que está no arquivo txt, realiza alguns passos para melhorar a manipulação e insere no final na lista
 def carregarPatrimonios():
 
 	db = open('patrimonio.txt','r')
@@ -114,6 +107,7 @@ def carregarPatrimonios():
 			print("Não à dados de patrimonio no sistema no sistema!")
 	db.close()
 
+#Recebe as informações que está no arquivo txt, realiza alguns passos para melhorar a manipulação e insere no final na lista
 def carregarProfessor():
 
 	db = open('professor.txt','r')
@@ -129,6 +123,7 @@ def carregarProfessor():
 			print("Não à dados de professores no sistema no sistema!")
 	db.close()
 
+#Recebe as informações que está no arquivo txt, realiza alguns passos para melhorar a manipulação e insere no final na lista
 def carregarAcessos():
 
 	db = open('acesso.txt','r')
@@ -141,7 +136,6 @@ def carregarAcessos():
 			dados[4] = dados[4].rstrip("\n")
 			dataR = converterStringDatetime(dados[3])
 			dataD = converterStringDatetime(dados[4])
-
 			acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'dataR':dataR,'dataD':dataD}
 			acessoLista.append(acessoDicionario)
 		else:
@@ -150,7 +144,7 @@ def carregarAcessos():
 
 def cadastrarPatrimonio(id,disponibilidade):
 
-	if id == 0:
+	if id == 0:	#realiza o cadastro as informações no arquivo utilizando o append
 		nome = input("Digite o nome do patrimonio:\n")
 		numero = input("Digite o numero do patrimonio:\n")
 		disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
@@ -193,14 +187,14 @@ def cadastrarProfessor():
 	menu()
 
 def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,dataD):	#A dataD e horaD são os horarios da devolução do patrimonio
-	if cadastrar == 0:
+	if cadastrar == 0:	#Realiza o cadastro das informações no arquivo de acesso
 		dataDevolucao = 0
 		db = open('acesso.txt', 'a')
 		db.write('{} # {} # {} # {} # {}\n'.format(matricula,patrimonio,tipoOp,dataR,dataDevolucao))
 		db.close()
 		acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'dataR':dataR,'dataD':dataDevolucao}
 		acessoLista.append(acessoDicionario)
-	else:
+	else:	#reescreve todas as informações do arquivo acesso para poder alterar o tipo de operação e a data de devolução do patrimômio
 		db = open('acesso.txt','w')
 		for j in acessoLista:
 			if j['matricula'] == matricula and j['patrimonio'] == patrimonio and j['tipoOp'] == 'retirada':
@@ -254,10 +248,10 @@ def reporPratimonio():
 						if j['disponibilidade'] == 1 or j['disponibilidade'] == '1':	#verifica se o patrimonio esta em uso
 							for k in acessoLista:
 								if k['matricula'] == matricula and k['patrimonio'] == patrimonio and k['tipoOp'] == 'retirada':
-									k['tipoOp'] = 'devolucao'
+									k['tipoOp'] = 'devolucao'	#altera o tipo de operação do acesso
 									j['disponibilidade'] = '0'	#altera a disponibilidade do patrimonio
 									data = dataAtual()
-									k['dataD'] = data
+									k['dataD'] = data	#recebe a data atual para saber a hora que o professor esta devolvendo o patrimômio
 									cadastrarAcesso(1,matricula,patrimonio,'devolucao',0,data)
 									cadastrarPatrimonio(patrimonio,j['disponibilidade'])
 									menu()
@@ -309,11 +303,7 @@ def menu():
 		print("Digite Um valor Valido!")
 		menu()
 
-#listagemProfessores()
-#converterStringDatetime()
 carregarAcessos()
 carregarProfessor()
 carregarPatrimonios()
-#cadastrarPatrimonio(0)
-#cadastrarProfessor()
 menu()

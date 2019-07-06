@@ -13,24 +13,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mainReseva.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="66" selection-start-line="66" selection-end-line="66" />
-              <folding>
-                <element signature="e#328#689#0" />
-                <element signature="e#1360#1589#0" />
-                <element signature="e#1825#2087#0" />
-                <element signature="e#2107#2276#0" />
-                <element signature="e#2296#2454#0" />
-                <element signature="e#2490#2624#0" />
-                <element signature="e#2655#3084#0" />
-                <element signature="e#3113#3531#0" />
-                <element signature="e#3558#4136#0" />
-                <element signature="e#4185#5548#0" />
-                <element signature="e#5577#6089#0" />
-                <element signature="e#6224#6961#0" />
-                <element signature="e#6989#8237#0" />
-                <element signature="e#8263#9676#0" />
-              </folding>
+            <state relative-caret-position="211">
+              <caret line="91" column="24" selection-start-line="91" selection-start-column="24" selection-end-line="91" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -168,14 +152,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.13392857" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.29787233" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.29787233" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3927987" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -230,24 +213,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mainReseva.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="66" selection-start-line="66" selection-end-line="66" />
-          <folding>
-            <element signature="e#328#689#0" />
-            <element signature="e#1360#1589#0" />
-            <element signature="e#1825#2087#0" />
-            <element signature="e#2107#2276#0" />
-            <element signature="e#2296#2454#0" />
-            <element signature="e#2490#2624#0" />
-            <element signature="e#2655#3084#0" />
-            <element signature="e#3113#3531#0" />
-            <element signature="e#3558#4136#0" />
-            <element signature="e#4185#5548#0" />
-            <element signature="e#5577#6089#0" />
-            <element signature="e#6224#6961#0" />
-            <element signature="e#6989#8237#0" />
-            <element signature="e#8263#9676#0" />
-          </folding>
+        <state relative-caret-position="211">
+          <caret line="91" column="24" selection-start-line="91" selection-start-column="24" selection-end-line="91" selection-end-column="24" />
         </state>
       </provider>
     </entry>
