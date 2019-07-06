@@ -37,7 +37,7 @@ def listagemProfessores():
 
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
-		if i['tipoOp'] == ' retirada ':
+		if i['tipoOp'] == 'retirada':
 			print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
 			print("Nª do patrimonio: {}".format(i['patrimonio']))
 			print("Retirado no dia: {}".format(i['dataR']))
