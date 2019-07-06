@@ -1,5 +1,3 @@
-proj   / 1 / 0
-wqe1    / 2 / 0
-wqe     / 3 / 0
-werrrr   / 4 / 0
-ghg   / 5 / 0
+projetor # 1 # 1
+controle # 2 # 0
+pc # 3 # 1

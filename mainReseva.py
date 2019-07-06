@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from datetime import datetime
+from datetime import *
 import os
 
 patrimonioLista = []
@@ -27,14 +27,13 @@ def converterStringDatetime(variavel):
 		return variavel
 
 def listagemProfessores():
-	matricula = input("Digite o número da matricula do professor:\n")
-	patrimonio = input("Digite o numero do patrimônio:\n")
-	#horas = int(input("Por mais de quantas horas?\n"))
-	#dias = int(input("Nos ultimos quantos dias?\n"))
+	#matricula = input("Digite o número da matricula do professor:\n")
+	#patrimonio = input("Digite o numero do patrimônio:\n")
+	horas = int(input("Por mais de quantas horas?\n"))
+	dias = int(input("Nos ultimos quantos dias?\n"))
 	for i in acessoLista:
 		if i['tipoOp'] == 'devolução' and i['matricula'] == matricula and i['patrimonio'] == patrimonio:
-			date = datetime.strptime(i['dataR'], '%d/%m/%Y').date()
-			print(date)
+			c = datetime.today() - timedelta(days=dias,hours=horas)
 
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
@@ -75,7 +74,7 @@ def carregarPatrimonios():
 	db = open('patrimonio.txt','r')
 	for entrada in db:
 		if entrada != '\n':
-			dados = entrada.split("/")
+			dados = entrada.split("#")
 			dados[1] = dados[1].strip(" ")
 			dados[2] = dados[2].rstrip("\n")
 			dados[2] = dados[2].lstrip(" ")
@@ -90,7 +89,7 @@ def carregarProfessor():
 	db = open('professor.txt','r')
 	for entrada in db:
 		if entrada != '\n':
-			dados = entrada.split("/")
+			dados = entrada.split("#")
 			dados[1] = dados[1].strip(" ")
 			dados[2] = dados[2].rstrip("\n")
 			dados[2] = dados[2].lstrip(" ")
@@ -105,7 +104,7 @@ def carregarAcessos():
 	db = open('acesso.txt','r')
 	for entrada in db:
 		if entrada != '\n':
-			dados = entrada.split("/")
+			dados = entrada.split("#")
 			dados[0] = dados[0].strip(" ")
 			dados[1] = dados[1].strip(" ")
 			dados[2] = dados[2].strip(" ")
@@ -118,7 +117,6 @@ def carregarAcessos():
 		else:
 			print("Não à dados de movimentação de patrimonio no sistema no sistema!")
 	db.close()
-	print(acessoLista)
 
 def cadastrarPatrimonio(id,disponibilidade):
 
@@ -127,7 +125,7 @@ def cadastrarPatrimonio(id,disponibilidade):
 		numero = input("Digite o numero do patrimonio:\n")
 		disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
 		db = open('patrimonio.txt','a')
-		db.write('{} / {} / {}\n'.format(nome,numero,disponibilidade))
+		db.write('{} # {} # {}\n'.format(nome,numero,disponibilidade))
 		db.close()
 		patrimonioDicionario = {'nome': nome,'numero': numero,'disponibilidade': disponibilidade}
 		patrimonioLista.append(patrimonioDicionario)
@@ -138,9 +136,9 @@ def cadastrarPatrimonio(id,disponibilidade):
 		db = open('patrimonio.txt','w')
 		for j in patrimonioLista:
 			if id == j['numero']:
-				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],disponibilidade))
+				db.write('{} # {} # {}\n'.format(j['nome'],j['numero'],disponibilidade))
 			else:
-				db.write('{} / {} / {}\n'.format(j['nome'],j['numero'],j['disponibilidade']))
+				db.write('{} # {} # {}\n'.format(j['nome'],j['numero'],j['disponibilidade']))
 		db.close()
 		if disponibilidade == 1 or  disponibilidade == '1':	#nesse if ele vai verificar se ele retirou ou repôs um patrimônio para poder apresentar a mensagem correta
 			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
@@ -156,7 +154,7 @@ def cadastrarProfessor():
 	senha = criptografarSenha(senha)
 	matricula = input("Digite o numero de matricula do professor:\n")
 	db = open('professor.txt', 'a')
-	db.write('{} / {} / {}\n'.format(nome,senha,matricula))
+	db.write('{} # {} # {}\n'.format(nome,senha,matricula))
 	db.close()
 	professorDicionario = {'nome': nome,'senha': senha,'matricula':matricula}
 	professorLista.append(professorDicionario)
@@ -168,7 +166,7 @@ def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,dataD):	#A dataD
 	if cadastrar == 0:
 		dataDevolucao = 0
 		db = open('acesso.txt', 'a')
-		db.write('{} / {} / {} / {} / {}\n'.format(matricula,patrimonio,tipoOp,dataR,dataDevolucao))
+		db.write('{} # {} # {} # {} # {}\n'.format(matricula,patrimonio,tipoOp,dataR,dataDevolucao))
 		db.close()
 		acessoDicionario = {'matricula':matricula,'patrimonio':patrimonio,'tipoOp':tipoOp,'dataR':dataR,'dataD':dataDevolucao}
 		acessoLista.append(acessoDicionario)
@@ -176,9 +174,9 @@ def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,dataD):	#A dataD
 		db = open('acesso.txt','w')
 		for j in acessoLista:
 			if j['matricula'] == matricula and j['patrimonio'] == patrimonio and j['tipoOp'] == 'retirada':
-				db.write('{} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],tipoOp,j['dataR'],dataD))
+				db.write('{} # {} # {} # {} # {}\n'.format(j['matricula'],j['patrimonio'],tipoOp,j['dataR'],dataD))
 			else:
-				db.write('{} / {} / {} / {} / {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['dataD']))
+				db.write('{} # {} # {} # {} # {}\n'.format(j['matricula'],j['patrimonio'],j['tipoOp'],j['dataR'],j['dataD']))
 		db.close()
 
 def retirarPratimonio():
@@ -281,6 +279,7 @@ def menu():
 		print("Digite Um valor Valido!")
 		menu()
 
+#listagemProfessores()
 #converterStringDatetime()
 carregarAcessos()
 carregarProfessor()
