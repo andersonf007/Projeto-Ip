@@ -148,14 +148,17 @@ def cadastrarPatrimonio(id,disponibilidade):
 		nome = input("Digite o nome do patrimonio:\n")
 		numero = input("Digite o numero do patrimonio:\n")
 		disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
-		db = open('patrimonio.txt','a')
-		db.write('{} # {} # {}\n'.format(nome,numero,disponibilidade))
-		db.close()
-		patrimonioDicionario = {'nome': nome,'numero': numero,'disponibilidade': disponibilidade}
-		patrimonioLista.append(patrimonioDicionario)
-		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-		print("Patrimônio cadastrado com sucesso!")
-		menu()
+		retorno = next((p for p in patrimonioLista if p['numero'] == numero), None)
+		if retorno != None:
+			print("Patrimônio ja encontra-se cadastrado!")
+		else:
+			db = open('patrimonio.txt','a')
+			db.write('{} # {} # {}\n'.format(nome,numero,disponibilidade))
+			db.close()
+			patrimonioDicionario = {'nome': nome,'numero': numero,'disponibilidade': disponibilidade}
+			patrimonioLista.append(patrimonioDicionario)
+			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+			print("Patrimônio cadastrado com sucesso!")
 	else:	#nesse else ele vai alterar a disponibilidade do patrimonio reescrevendo as informacoes no arquivo
 		db = open('patrimonio.txt','w')
 		for j in patrimonioLista:
@@ -170,7 +173,7 @@ def cadastrarPatrimonio(id,disponibilidade):
 		elif disponibilidade == 0 or disponibilidade == '0':
 			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 			print("O patrimônio agora está disponivel para retirada!")
-		menu()
+	menu()
 
 def cadastrarProfessor():
 	nome = input("Digite o nome do professor:\n")
