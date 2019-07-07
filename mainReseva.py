@@ -85,7 +85,7 @@ def dataAtual():
 	return dataAtual
 
 #O metodo ord() retorna um inteiro referente ao caracter na tabela ascii que é somado 25 e vai para chr() que recebe um interiro e retorna uma string de acordo com o unicode
-def criptografiaSenha(senha):
+def criptografarSenha(senha):
 	criptografada = ''
 	for c in senha:
 		criptografada += chr(ord(c)+25)
