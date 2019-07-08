@@ -14,38 +14,62 @@ patrimoniosAguardandoDevolucaoDicionatio = {}
 
 #Recebe uma string separa ela em partes específicas para converter em datetime
 def converterStringDatetime(variavel):
-	if variavel != ' 0':
+	string = '2019-07-03 18:49:27.296766'
+	if variavel != '0':
 		dados = variavel.split("-")
 		dados2 = variavel.split(":")
 		ano = int(dados[0])
 		mes = int(dados[1])
 		dia = int(dados[2].split(' ')[0])
-		hora = int(dados2[0].split(' ')[2])
+		hora = int(dados2[0].split(' ')[1])
 		minutos = int(dados2[1])
 		return datetime(year=ano,month=mes,day=dia,hour=hora,minute=minutos)
 	else:
 		return variavel
 
+def somaHora(matricula,patrimonio,data):
+	i = 0
+	try:
+		for p in acessoLista:
+			if p['tipoOp'] == 'devolucao' and p['matricula'] == matricula and p['patrimonio'] == patrimonio and p['dataR'] >= data:
+				dataSubtraida = p['dataD'] - p['dataR']
+				if i == 0:
+					soma = dataSubtraida
+				else:
+					soma = soma + dataSubtraida
+				i = 1
+		return soma
+	except:
+		return 0
+
 def listagemProfessores():
 	lista = []
 	lista2 = []
-	dicionario = {}
 	patrimonio = input("Digite o numero do patrimônio:\n")
-	horas = int(input("Por mais de quantas horas?\n"))
+	horas = input("Por mais de quantas horas?\n")
 	dias = int(input("Nos últimos quantos dias?\n"))
 	for i in acessoLista:
 		if i['tipoOp'] == 'devolucao' and i['patrimonio'] == patrimonio: #Compara as informações digitadas com as informações na lista de acesso
-			data = datetime.today() - timedelta(days=dias,hours=horas) #subtrai a data e a hora
+			data = datetime.today() - timedelta(days=dias) #subtrai a data e a hora
 			if i['dataR'] >= data:	#Verifica as datas informada é inferior as datas no arquivo
 				for j in professorLista:
 					if j['matricula'] == i['matricula']:
-						dicionario = {'nome':j['nome'],'matricula':j['matricula']}
-						lista.append(dicionario)	#Essa lista esta com informaçõesem duplicidade
-
+						somaHoras = somaHora(i['patrimonio'],j['matricula'],data)
+						somaHorasStr = str(somaHoras)
+						dados = somaHorasStr.split(":")
+						#dados[0] = dados[0].strip(" ")
+						if dados[0] >= horas:
+							dicionario = {'nome':j['nome'],'matricula':j['matricula'],'horas':dados[0]}
+							lista.append(dicionario)	#Essa lista esta com informaçõesem duplicidade
+						else:
+							print("-=-=-=-=-=-=-=-=-")
+							print("Não existe dados!")
+							menu()
 	for k in lista: # varre a lista que esta com duplicidade e confere com a lista2 que nao tem duplicidade!
 		if k['nome'] not in lista2:
 			lista2.append(k['nome'])
-			print("Professor: {} / Matricula: {} ".format(k['nome'],k['matricula']))
+			print("Professor: {} / Matricula: {} / com {} hora(s)".format(k['nome'],k['matricula'],k['horas']))
+	menu()
 
 def listagemPratimoniosMaisUsados():
 	lista = []
@@ -137,7 +161,9 @@ def carregarAcessos():
 			dados[0] = dados[0].strip(" ")
 			dados[1] = dados[1].strip(" ")
 			dados[2] = dados[2].strip(" ")
+			dados[3] = dados[3].strip(" ")
 			dados[4] = dados[4].rstrip("\n")
+			dados[4] = dados[4].strip(" ")
 			dataR = converterStringDatetime(dados[3])
 			dataD = converterStringDatetime(dados[4])
 			acessoDicionario = {'matricula':dados[0],'patrimonio':dados[1],'tipoOp':dados[2],'dataR':dataR,'dataD':dataD}
@@ -320,3 +346,5 @@ carregarAcessos()
 carregarProfessor()
 carregarPatrimonios()
 menu()
+#converterStringDatetime(1)
+#somaHora('1','1')
