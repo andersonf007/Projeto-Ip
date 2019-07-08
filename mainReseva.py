@@ -67,9 +67,13 @@ def listagemPratimoniosMaisUsados():
 def patrimoniosAguardandoDevolucao():
 	for i in acessoLista:
 		if i['tipoOp'] == 'retirada':
-			print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
-			print("Nª do patrimonio: {}".format(i['patrimonio']))
-			print("Retirado no dia: {}".format(i['dataR']))
+			for j in professorLista:
+				if i['matricula'] == j['matricula']:
+					print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+					print("Matricula do professor: {}".format(j['matricula']))
+					print("Nome do professor: {}".format(j['nome']))
+					print("Nª do patrimonio: {}".format(i['patrimonio']))
+					print("Retirado no dia: {}".format(i['dataR']))
 	menu()
 
 def pratimoniosDisponiveis():
@@ -148,8 +152,9 @@ def cadastrarPatrimonio(id,disponibilidade):
 		nome = input("Digite o nome do patrimonio:\n")
 		numero = input("Digite o numero do patrimonio:\n")
 		disponibilidade = 0 #onde a disponibilidade for zero o equipamento estará disponivel
-		retorno = next((p for p in patrimonioLista if p['numero'] == numero), None)
-		if retorno != None:
+		retorno = next((p for p in patrimonioLista if p['numero'] == numero), None)	#verifica se ja existe algum patrimonio cadastrado com o  numero passado
+		if retorno != None:	#verifica se o retorno esta vazio ou com informações
+			print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
 			print("Patrimônio ja encontra-se cadastrado!")
 		else:
 			db = open('patrimonio.txt','a')
@@ -180,13 +185,18 @@ def cadastrarProfessor():
 	senha = input("Digite o senha do professor:\n")
 	senha = criptografarSenha(senha)
 	matricula = input("Digite o numero de matricula do professor:\n")
-	db = open('professor.txt', 'a')
-	db.write('{} # {} # {}\n'.format(nome,senha,matricula))
-	db.close()
-	professorDicionario = {'nome': nome,'senha': senha,'matricula':matricula}
-	professorLista.append(professorDicionario)
-	print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-	print("Professor cadastrado com sucesso!")
+	retorno = next((p for p in professorLista if p['matricula'] == matricula), None)	#verifica se ja existe algum patrimonio cadastrado com o  numero passado
+	if retorno != None:	#verifica se o retorno esta vazio ou com informações
+		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
+		print("Professor ja encontra-se cadastrado!")
+	else:
+		db = open('professor.txt', 'a')
+		db.write('{} # {} # {}\n'.format(nome,senha,matricula))
+		db.close()
+		professorDicionario = {'nome': nome,'senha': senha,'matricula':matricula}
+		professorLista.append(professorDicionario)
+		print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+		print("Professor cadastrado com sucesso!")
 	menu()
 
 def cadastrarAcesso(cadastrar,matricula,patrimonio,tipoOp,dataR,dataD):	#A dataD e horaD são os horarios da devolução do patrimonio
